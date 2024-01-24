@@ -1,0 +1,75 @@
+# DOCKER build
+Dockerfile
+docker-compose
+Docker Networks
+Docker Volumes
+Docker Images
+Docker Containers
+Docker Environment Variables
+
+------------------------------------------------------------------------------------------------------------
+ENTRYPOINT has two forms:
+
+The exec form, which is the preferred form:	ENTRYPOINT ["executable", "param1", "param2"]
+
+The shell form:								ENTRYPOINT command param1 param2
+
+An ENTRYPOINT allows you to configure a container that will run as an executable.
+For example, the following starts nginx with its default content, listening on port 80:
+	docker run -i -t --rm -p 80:80 nginx
+The shell form prevents any CMD or run command line arguments from being used, but has the disadvantage that your ENTRYPOINT will be started as a subcommand of /bin/sh -c, which does not pass signals. This means that the executable will not be the container’s PID 1 - and will not receive Unix signals - so your executable will not receive a SIGTERM from docker stop <container>.
+
+https://docs.docker.com/engine/reference/builder/#entrypoint
+------------------------------------------------------------------------------------------------------------
+The EXPOSE instruction informs Docker that the container listens on the specified network ports at runtime. You can specify whether the port listens on TCP or UDP, and the default is TCP if the protocol is not specified.
+------------------------------------------------------------------------------------------------------------
+
+VOLUME
+
+VOLUME ["/data"]
+The VOLUME instruction creates a mount point with the specified name and marks it as holding externally mounted volumes from native host or other containers. The value can be a JSON array, VOLUME ["/var/log/"], or a plain string with multiple arguments, such as VOLUME /var/log or VOLUME /var/log /var/db.
+	FROM ubuntu
+	RUN mkdir /myvol
+	RUN echo "hello world" > /myvol/greeting
+	VOLUME /myvol
+Dockerfile results in an image that causes docker run to create a new mount point at /myvol and copy the greeting file into the newly created volume.
+	docker run -v /path/on/host:/path/in/container my-image
+/path/on/host is the directory on the host machine that you want to mount, and /path/in/container is the directory inside the container where you want to mount it. Any files and data stored in the directory on the host machine will be accessible to the container through the mount point. Similarly, any files and data written to the directory inside the container will be persisted on the host machine through the mount point.
+
+https://docs.docker.com/compose/compose-file/07-volumes/
+------------------------------------------------------------------------------------------------------------
+
+WORKDIR /path/to/workdir
+The WORKDIR instruction sets the working directory for any RUN, CMD, ENTRYPOINT, COPY and ADD instructions that follow it in the Dockerfile. If the WORKDIR doesn’t exist, it will be created even if it’s not used in any subsequent Dockerfile instruction.
+
+The WORKDIR instruction can be used multiple times in a Dockerfile. If a relative path is provided, it will be relative to the path of the previous WORKDIR instruction. For example:
+WORKDIR /a
+WORKDIR b
+WORKDIR c
+RUN pwd
+The output of the final pwd command in this Dockerfile would be /a/b/c.
+
+
+------------------------------------------------------------------------------------------------------------
+MARIADB
+
+//To connect on mysql CLI
+mysql -uroot
+
+//To see all the users
+SELECT User FROM mysql.user;
+
+// To connect on your wordpress database
+USE wordpress
+
+// To export the file
+mysqldump -u username -p databasename > filename.sql
+
+// To import the file
+mysql -uroot -p$MYSQL_ROOT_PASSWORD $MYSQL_DATABASE < /usr/local/bin/wordpress.sql
+-----------------------------
+	SHOW DATABASES; // show the databes
+	use 'wordpress'; // go in the wordpress databse
+	SHOW TABLES; // show all the tables from the database you selected
+	SELECT wp_users.display_name FROM wp_users; // display username from wordpress database
+	SELECT *  FROM wp_users; // select
