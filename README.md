@@ -14,6 +14,7 @@ To setup the project, first run:
 
 ```bash
 make setup				# this will create directories for the necessary volumes
+						# and add domain to the localhost
 ```
 
 following by:
